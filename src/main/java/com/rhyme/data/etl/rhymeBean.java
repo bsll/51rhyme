@@ -4,16 +4,17 @@ import org.json.JSONObject;
 
 
 public class rhymeBean {
-    public rhymeBean(String lastword,String body,String source,String author,String year, String title){
-        this.lastword=lastword;
-        this.body=body;
-        this.source=source;
-        this.author=author;
-        this.year=year;
-        this.title=title;
+    public rhymeBean(String lastword, String body, String source, String author, String year, String title) {
+        this.lastword = lastword;
+        this.body = body;
+        this.source = source;
+        this.author = author;
+        this.year = year;
+        this.title = title;
     }
-    public  String lastword ;
-    public  String body;
+
+    public String lastword;
+    public String body;
 
     public String getLastword() {
         return lastword;
@@ -63,9 +64,9 @@ public class rhymeBean {
         this.title = title;
     }
 
-    public  String source;
-    public  String author;
-    public  String year;
+    public String source;
+    public String author;
+    public String year;
     public String title;
 
     @Override
