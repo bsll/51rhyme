@@ -68,8 +68,6 @@ public class tangshiETL {
         for (String str : splits) {
             result += str.substring(str.length() - 1);
         }
-
-
         return result;
     }
 

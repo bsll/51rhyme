@@ -2,74 +2,43 @@ package com.rhyme.data.etl;
 
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class tangshiETL {
+public class songciETL {
 
-    public static final Set<String> digitalSet = new HashSet<String>() {{
-        add("一");
-        add("二");
-        add("三");
-        add("四");
-        add("五");
-        add("六");
-        add("七");
-        add("八");
-        add("九");
-        add("十");
-        add("百");
-    }};
-
-    public static final Set<String> titalFlagCharacter = new HashSet<String>() {{
-        add("】");
-        add("【");
-        add("_");
-    }};
-
+    public static final String separate ="全宋词";
     public static final String defaultTital = "无题";
     public static final String defaultAuthor = "无名氏";
-    public static final String source = "全唐诗";
-    public static final String year = "唐朝";
-
-
-    public static boolean IsTital(String initial) {
-        boolean flag = true;
-        for (String str : titalFlagCharacter) {
-            if (!initial.contains(str)) {
-                flag = false;
-                break;
-            }
-        }
-        return flag;
-    }
-
-    public static final String hanziPattern = "[\\u4e00-\\u9fa5|，|。]+";
+    public static final String source = "全宋词";
+    public static final String year = "宋朝";
+    public static final String hanziPattern = "[\\u4e00-\\u9fa5|，|。|（|）|！|；|、]+";
 
     public static boolean isALLHanzi(String line) {
         return Pattern.matches(hanziPattern, line);
     }
-
-    public static boolean IsHaveDigits(String initial) {
-        boolean flag = false;
-        for (String str : digitalSet) {
-            if (initial.contains(str)) {
-                flag = true;
-                break;
-            }
-        }
-        return flag;
+    public static boolean isTitle(String tempLine){
+        return isALLHanzi(tempLine)&&(!tempLine.contains("。")&&!tempLine.contains("，"))||(tempLine.contains("（")&&tempLine.contains("）"));
     }
-
-
+    public static String replaceBlank(String str) {
+        String dest = "";
+        if (str!=null) {
+            Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+            Matcher m = p.matcher(str);
+            dest = m.replaceAll("");
+        }
+        return dest;
+    }
     public static String getLastWord(String body) {
         String result = "";
-        String[] splits = body.split("。");
+        String[] splits = body.split("。|；|！");
         for (String str : splits) {
             result += str.substring(str.length() - 1);
         }
-
-
         return result;
     }
 
@@ -95,70 +64,76 @@ public class tangshiETL {
             List<String> tempList = new ArrayList<String>();
             line = br.readLine();
             while (line != null) {
-                if (IsTital(line)) {
-                    String[] splits = line.split("【|】");
 
-                    if (splits.length == 3) {
-                        String title = splits[1].trim();
-                        String author = splits[2].trim();
-                        if (title.equals("")) {
-                            title = defaultTital;
-                        }
-                        if (author.equals("")) {
-                            title = defaultAuthor;
+                if(line.trim().endsWith(separate)){
+                    line = br.readLine();
+                    while(line!=null &&!line.trim().endsWith(separate)){
+                        if(!line.trim().equals("")){
+                            tempList.add(replaceBlank(line.trim()));
+
                         }
                         line = br.readLine();
-                        while (line != null && !IsTital(line)) {
-                            if (!line.contains("制作") && !line.contains("----------") && !(line.trim().startsWith("卷") && IsHaveDigits(line.trim()))) {
-                                tempList.add(line);
+                    }
+                    //解析list
+                    String author = tempList.get(0);
+                    int index = 1;
+                    while(index<tempList.size()){
+                        String tempLine = tempList.get(index);
+                        String title =null;
+                        tempLine =replaceBlank(tempLine.trim());
+                        if(isTitle(tempLine)){
+                            title = tempLine;
+                            index++;
+                            tempLine = tempList.get(index);
+                            String body="";
+                            while(!isTitle(tempLine)&&index<tempList.size()-1){
+                                body+=tempLine;
+                                index++;
+                                tempLine = tempList.get(index);
                             }
-                            line = br.readLine();
+                           if(body.trim()!=""&&title.trim()!=null&&isALLHanzi(body)&&isALLHanzi(title)){
+                               String lastWord = getLastWord(body);
+                               rhymeBean bean = new rhymeBean(lastWord, body, source, author, year, title);
+                               String t = bean.getJSONObject().toString();
+                               System.out.println(t);
+                               bw.write(t);
+                               bw.newLine();
+                               bw.flush();
+                           }
+                        }else{
+                            index++;
                         }
-                        String body = "";
-                        for (String str : tempList) {
-                            body += str.trim();
-                        }
-                        tempList.clear();
-                        body = body.trim();
 
-
-                        if (isALLHanzi(body)) {
-                            String lastWord = getLastWord(body);
-                            rhymeBean bean = new rhymeBean(lastWord, body, source, author, year, title);
-                            String t = bean.getJSONObject().toString();
-                            System.out.println(t);
-                            bw.write(t);
-                            bw.newLine();
-                            bw.flush();
-
-                        }
 
 
                     }
 
-                } else {
+                    /*
+                    String temp ="";
+                    for(String s:tempList){
+                        temp +=s;
+                    }
+                    System.out.println(temp);
+                    */
+                    tempList.clear();
+
+                }else{
                     line = br.readLine();
+
                 }
+
+
 
             }
 
-        } catch (Exception e) {
+
+        }catch (Exception e){
             e.printStackTrace();
         }
-
-        try {
-            bw.close();
-            br.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-
     }
-
     public static void main(String[] args) {
-        process("/Users/gaominghui/51rhyme/src/main/resources/全唐诗副本.txt",
-                "/Users/gaominghui/51rhyme/src/main/resources/json.txt");
+        process("/Users/gaominghui/51rhyme/src/main/resources/全宋词副本.txt",
+                "/Users/gaominghui/51rhyme/src/main/resources/songCiJson.txt");
         System.out.println("done");
 
     }
