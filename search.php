@@ -5,7 +5,8 @@ include "./config.php";
 $flag = $_GET["flag"];
 $word = $_GET["word"];
 if($flag == "word"){
-    $arr = getBody($word);
+    #写死的，一次显示1000篇
+    $arr = getBody($word,0,1000);
     foreach($arr as $key=>$value){
         $num = $key+1;
         print "第".(string)($num)."篇:".'</br >';

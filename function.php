@@ -13,8 +13,10 @@ function getYaYun($word){
     }
     return $syn_arr;
 }
-function getBody($word){
+function getBody($word,$start,$limit){
     $json = '{
+        "from": '.$start.',
+        "size":'.$limit.',
         "query": {
             "match": {
                 "lastword": "'.$word.'"
