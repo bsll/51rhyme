@@ -10,9 +10,10 @@ if($flag == "word"){
         $num = $key+1;
         print "第".(string)($num)."篇:".'</br >';
         print "姓名:".$value["_source"]['author'].'</br >';
+        print "题目:".$value["_source"]['title'].'</br >';
         print "文章:".$value["_source"]['body'].'</br >';
         print "来源:".$value["_source"]['source'].'</br >';
-        print "朝代:".$value["_source"]['year'].'</br >';
+        print "时期:".$value["_source"]['year'].'</br >';
     }
 }
 else{
