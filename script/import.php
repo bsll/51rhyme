@@ -8,18 +8,19 @@ if ($argc !=2){
 $filename = $argv[1];
 $fr = fopen($filename,"r");
 $string = "";
-$i = getTotal();
 $index = array();
 $index['index']['_index'] = "yayun";
 $index['index']['_type'] = 'yayun';
 $bulk_file = "";
+$i = 0;
 while(!feof($fr)){
     $line = trim(fgets($fr));
     if($line != ""){
-        $i += 1;
-        $index['index']['_id'] = $i;
+        $fields = json_decode($line,true);
+        $index['index']['_id'] = md5($fields['body']);
         $index_json = json_encode($index)."\n";
         $bulk_file = $bulk_file.$index_json.$line."\n";
+        $i += 1;
     }
     if($i % 1000 == 0){
         print $i."\n";
