@@ -1,6 +1,6 @@
 #!/bin/sh
 source /etc/profile
-echo "delte the index"
+echo "delete the index"
 curl -XDELETE 'localhost:9200/yayun'
 echo "recreate the index"
 curl -XPUT 'localhost:9200/yayun' -d @yayun.txt
