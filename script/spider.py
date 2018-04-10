@@ -33,7 +33,7 @@ def getAttr(id):
 
 count = 0
 fw = open("musiclrc.txt", "w")
-for id in range(1000000,100000000):
+for id in range(1003165,100000000):
     res = {}
     artistsName = ""
     songName = ""
@@ -43,9 +43,10 @@ for id in range(1000000,100000000):
         print(id)
         print(count)
         attrRes = json.loads(getAttr(id))
-        res["songName"] = attrRes["songs"][0]["name"]
-        res["artistsName"] = attrRes["songs"][0]["artists"][0]["name"]
-        res["lrc"] = result['lyric']
-        res["id"] = id
-        final_res = json.dumps(res)
-        fw.write(final_res+"\n")
+        if "songName" in attrRes:
+            res["songName"] = attrRes["songs"][0]["name"]
+            res["artistsName"] = attrRes["songs"][0]["artists"][0]["name"]
+            res["lrc"] = result['lyric']
+            res["id"] = id
+            final_res = json.dumps(res)
+            fw.write(final_res+"\n")
