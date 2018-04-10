@@ -48,7 +48,7 @@ for id in range(1003165,100000000):
             if "name" in attrRes["songs"][0]:
                  res["songName"] = attrRes["songs"][0]["name"]
             res["artistsName"] = ""
-            if "name" in attrRes["songs"][0]["artists"]:
+            if "name" in attrRes["songs"][0]["artists"][0]:
                 res["artistsName"] = attrRes["songs"][0]["artists"][0]["name"]
             res["lrc"] = result['lyric']
             res["id"] = id
