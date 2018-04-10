@@ -43,12 +43,12 @@ for id in range(1003165,100000000):
         print(id)
         print(count)
         attrRes = json.loads(getAttr(id))
-        if "songs" in attrRes:
+        if "songs" in attrRes and len(attrRes["songs"]) != 0:
             res["songName"] = ""
-            if "name" in attRes["songs"][0]:
+            if "name" in attrRes["songs"][0]:
                  res["songName"] = attrRes["songs"][0]["name"]
             res["artistsName"] = ""
-            if "name" in attRes["songs"][0]["artists"]:
+            if "name" in attrRes["songs"][0]["artists"]:
                 res["artistsName"] = attrRes["songs"][0]["artists"][0]["name"]
             res["lrc"] = result['lyric']
             res["id"] = id
