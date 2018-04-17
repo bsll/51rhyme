@@ -25,6 +25,7 @@ def getResult(id,proxy_request,flag):
     if flag == "id":
         url = "http://music.163.com/api/song/media?id="+(str)(id)
     elif flag == "song":
+        ids = '%5B' + (str)(id) + '%5D'
         url = "http://music.163.com/api/song/detail/?id="+(str)(id)+"&ids="+ids
     headers['Referer'] = 'http://music.163.com/song?id' + (str)(id)
     try:
