@@ -61,20 +61,21 @@ if __name__ == "__main__":
     proxy_request = urllib3.ProxyManager(proxy,timeout=2.0,retries=3)
     #取出id后，利用当前proxy_request进行访问
     for id in range((int)(start),(int)(end)):
-        result = ""
-        while result == "":
+        print(id)
+        result = None
+        while result == None:
             result = getResult(id,proxy_request,"id")
             #如果代理失效，则进行更换，继续上述步骤
-            if result == "" :
+            if result == None :
                 proxy = "http://"+get_proxy().decode()
                 proxy_request = urllib3.ProxyManager(proxy,timeout=2.0,retries=3)
         if "lyric" in result:
             print(id)
             res = {}
-            attrRes = ""
-            while attrRes == "":
+            attrRes = None
+            while attrRes == None:
                 attrRes = getResult(id,proxy_request,"song")
-                if attrRes == "" :
+                if attrRes == None :
                     proxy = "http://"+get_proxy().decode()
                     proxy_request = urllib3.ProxyManager(proxy,timeout=2.0,retries=3)
             if "songs" in attrRes and len(attrRes["songs"]) != 0:
