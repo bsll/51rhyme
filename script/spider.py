@@ -41,7 +41,7 @@ def getResult(id,proxy_request,flag):
             if "msg" in result and result['msg'] == "Cheating":
                 return;
             #{"rtn":108545,"msg":""}
-            else if "msg" in result and result['msg'] == "" and "lyric" not in result:
+            elif "msg" in result and result['msg'] == "" and "lyric" not in result:
                 return;
     except urllib3.exceptions.ConnectTimeoutError as e:
         print(e)
